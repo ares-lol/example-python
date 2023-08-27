@@ -1,0 +1,6 @@
+pycryptodome
+requests
+base64
+time
+subprocess
+enum
