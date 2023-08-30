@@ -60,6 +60,18 @@ class session_ctx:
 
         return self.license_data
 
+    def get_app_status(self, app_array):
+        app_id = ""
+        for byte in app_array:
+            app_id += chr(byte ^ self.server_signature)
+
+        data = requests.get(f'https://api.ares.lol/status/{app_id}').json()
+
+        if data["code"] == 0:
+            return data["status"]
+        else:
+            raise Exception("Unknown app")
+        
     def decrypt_text(self, encoded, private_key):
         decoded = base64.b64decode(encoded)
         cipher = PKCS1_OAEP.new(private_key)
@@ -80,7 +92,6 @@ class session_ctx:
             return
 
         client_key = random.randint(0, 99999999)
-    
         
         server_public_key_temp = f'-----BEGIN PUBLIC KEY-----\n{server_public_key_temp}\n-----END PUBLIC KEY-----'
 
